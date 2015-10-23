@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class CubeGenerator : MonoBehaviour
 {
@@ -8,8 +9,11 @@ public class CubeGenerator : MonoBehaviour
     public GameObject rotatorPrefab;
     public Material[] textureArray = new Material[6];
 
+    [Range(2, 20)]
     public int xSize;
+    [Range(2, 20)]
     public int ySize;
+    [Range(2, 20)]
     public int zSize;
 
     Vector3 startingPosition;
@@ -121,7 +125,8 @@ public class CubeGenerator : MonoBehaviour
     void CreateRotationMatrix()
     {
         GameObject rotParent = (GameObject)Instantiate(rotatorPrefab, new Vector3((xSize / 2.0f), (ySize / 2.0f), (zSize / 2.0f)), Quaternion.identity);
-        rotParent.name = "Rotation Core";
+        rotParent.name = "RotationCore";
+        rotatorPrefab.GetComponent<RotatorData>().RotationAxis = RotatorData.Rotation.n;
         rotators.Add(rotParent);
         rotParent.transform.SetParent(transform);
 
@@ -131,8 +136,8 @@ public class CubeGenerator : MonoBehaviour
             if (temp != transform.position)
             {
                 rotatorPrefab = (GameObject)Instantiate(rotatorPrefab, temp, Quaternion.identity);
-                //facePrefab.transform.localScale = new Vector3(offset, offset, offset);
                 rotatorPrefab.name = "XFace " + rotatorPrefab.transform.position;
+                rotatorPrefab.GetComponent<RotatorData>().RotationAxis = RotatorData.Rotation.x;
                 rotatorPrefab.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                 rotators.Add(rotatorPrefab);
                 rotatorPrefab.transform.SetParent(rotParent.transform);
@@ -144,8 +149,8 @@ public class CubeGenerator : MonoBehaviour
             if (temp != transform.position)
             {
                 rotatorPrefab = (GameObject)Instantiate(rotatorPrefab, temp, Quaternion.identity);
-                //facePrefab.transform.localScale = new Vector3(offset, offset, offset);
                 rotatorPrefab.name = "YFace " + rotatorPrefab.transform.position;
+                rotatorPrefab.GetComponent<RotatorData>().RotationAxis = RotatorData.Rotation.y;
                 rotatorPrefab.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                 rotators.Add(rotatorPrefab);
                 rotatorPrefab.transform.SetParent(rotParent.transform);
@@ -157,8 +162,8 @@ public class CubeGenerator : MonoBehaviour
             if (temp != transform.position)
             {
                 rotatorPrefab = (GameObject)Instantiate(rotatorPrefab, temp, Quaternion.identity);
-                //facePrefab.transform.localScale = new Vector3(offset, offset, offset);
                 rotatorPrefab.name = "ZFace " + rotatorPrefab.transform.position;
+                rotatorPrefab.GetComponent<RotatorData>().RotationAxis = RotatorData.Rotation.z;
                 rotatorPrefab.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                 rotators.Add(rotatorPrefab);
                 rotatorPrefab.transform.SetParent(rotParent.transform);
