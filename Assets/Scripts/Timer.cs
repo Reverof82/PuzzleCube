@@ -8,23 +8,36 @@ public class Timer : MonoBehaviour
     public enum Mode { stopwatch, countdown };
     Mode clockMode;
     TimeSpan time;
-    double startTime = 60;
-    int numMinutes = 5;
+    TimeSpan warningTime = TimeSpan.FromSeconds(30);
+    TimeSpan endingTime = TimeSpan.FromSeconds(5);
+    double startTime = 0;
+    int numDays = 1;
+    int numHours = 0;
+    int numMinutes = 1;
+    int numSeconds = 30;
+    public Color normalColor;
+    public Color warningColor;
+    public Color endingColor;
+    public bool changeMode = false;
 
-    public bool start;
+    public bool start = false;
 
     // Use this for initialization
     void Start()
     {
-        StartStopTimer = false;
-        ClockMode = Mode.countdown;
-        ChangeMode();
+        ClockMode = Mode.stopwatch;
+        SetTime();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (StartStopTimer)
+        if (changeMode)
+        {
+            changeMode = false;
+            ChangeMode();
+        }
+        if (StartTimer)
         {
             if (ClockMode == Mode.stopwatch)
             {
@@ -37,34 +50,110 @@ public class Timer : MonoBehaviour
             }
             GetComponent<Text>().text = FormatTime();
         }
-        if(ClockMode == Mode.countdown && startTime <= 0)
+        if (ClockMode == Mode.countdown && startTime <= 0)
         {
-            StartStopTimer = false;
-            GetComponent<Text>().text = "<color=#ff0000><b>OUTATIME</b></color>";
+            StartTimer = false;
+            GetComponent<Text>().text = "<b>OUTATIME</b>";
         }
     }
 
     string FormatTime()
     {
-        string timeText = string.Format("{0:00}:{1:00}:{2:00}:{3:000}", time.Hours, time.Minutes, time.Seconds, time.Milliseconds);
-        string fullText = "<color=#00ff00><b>" + timeText + "</b></color>";
-        return fullText;
+        SetTimerColor();
+        string timeText;
+        if (ClockMode == Mode.countdown)
+        {
+            if (NumDays >= 1)
+            {
+                timeText = string.Format("{0:00}:{1:00}:{2:00}:{3:00}:{4:000}", time.Days, time.Hours, time.Minutes, time.Seconds, time.Milliseconds);
+            }
+            else if (NumHours >= 1)
+            {
+                timeText = string.Format("{0:00}:{1:00}:{2:00}:{3:000}", time.Hours, time.Minutes, time.Seconds, time.Milliseconds);
+            }
+            else if (NumMinutes >= 1)
+            {
+                timeText = string.Format("{0:00}:{1:00}:{2:000}", time.Minutes, time.Seconds, time.Milliseconds);
+            }
+            else
+            {
+                timeText = string.Format("{0:00}:{1:000}", time.Seconds, time.Milliseconds);
+            }
+        }
+        else
+        {
+            timeText = string.Format("{0:00}:{1:000}", time.Seconds, time.Milliseconds);
+        }
+        
+        return "<b>" + timeText + "</b>";
+    }
+
+    void SetTimerColor()
+    {
+        Color color = normalColor;
+        if (ClockMode == Mode.countdown)
+        {
+            if (time <= warningTime)
+            {
+                color = warningColor;
+            }
+            if (time <= endingTime)
+            {
+                color = endingColor;
+            }
+        }
+        GetComponent<Text>().color = color;
     }
 
     void ChangeMode()
     {
         if (ClockMode == Mode.countdown)
         {
-            if(numMinutes >= 1)
+            ClockMode = Mode.stopwatch;
+            SetTime();
+        }
+        else if (ClockMode == Mode.stopwatch)
+        {
+            ClockMode = Mode.countdown;
+            SetTime(NumDays, NumHours, NumMinutes, NumSeconds);
+        }
+    }
+
+    void SetTime()
+    {
+        StartTimer = false;
+        if (ClockMode == Mode.stopwatch)
+        {
+            startTime = 0;
+            time = TimeSpan.FromSeconds(startTime);
+            GetComponent<Text>().text = FormatTime();
+        }
+    }
+    
+    void SetTime(int numDays, int numHours, int numMinutes, int numSeconds)
+    {
+        StartTimer = false;
+        if (ClockMode == Mode.countdown)
+        {
+            if(numDays >= 1)
             {
-                startTime = startTime * numMinutes;
+                numDays = numDays * 86400;
             }
+            if(numHours >= 1)
+            {
+                numHours = numHours * 3600;
+            }
+            if (numMinutes >= 1)
+            {
+                numMinutes = numMinutes * 60;
+            }
+            startTime = numDays + numHours + numMinutes + numSeconds;
             time = TimeSpan.FromSeconds(startTime);
             GetComponent<Text>().text = FormatTime();
         }
     }
 
-    public bool StartStopTimer
+    public bool StartTimer
     {
         get { return start; }
         set { start = value; }
@@ -74,5 +163,29 @@ public class Timer : MonoBehaviour
     {
         get { return clockMode; }
         set { clockMode = value; }
+    }
+
+    public int NumDays
+    {
+        get { return numDays; }
+        set { numDays = value; }
+    }
+
+    public int NumHours
+    {
+        get { return numHours; }
+        set { numHours = value; }
+    }
+
+    public int NumMinutes
+    {
+        get { return numMinutes; }
+        set { numMinutes = value; }
+    }
+
+    public int NumSeconds
+    {
+        get { return numSeconds; }
+        set { numSeconds = value; }
     }
 }

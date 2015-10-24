@@ -713,6 +713,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9800dc6c2f319714dafb5facff68567a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  normalColor: {r: 0, g: 1, b: .462069035, a: 1}
+  warningColor: {r: .986206889, g: 1, b: 0, a: 1}
+  endingColor: {r: 1, g: 0, b: 0, a: 1}
+  changeMode: 0
+  start: 0
 --- !u!1 &723667947
 GameObject:
   m_ObjectHideFlags: 0
