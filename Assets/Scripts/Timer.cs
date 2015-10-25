@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System;
-using System.Collections;
 using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
@@ -61,30 +60,23 @@ public class Timer : MonoBehaviour
     {
         SetTimerColor();
         string timeText;
-        if (ClockMode == Mode.countdown)
+        
+        if (NumDays >= 1)
         {
-            if (NumDays >= 1)
-            {
-                timeText = string.Format("{0:00}:{1:00}:{2:00}:{3:00}:{4:000}", time.Days, time.Hours, time.Minutes, time.Seconds, time.Milliseconds);
-            }
-            else if (NumHours >= 1)
-            {
-                timeText = string.Format("{0:00}:{1:00}:{2:00}:{3:000}", time.Hours, time.Minutes, time.Seconds, time.Milliseconds);
-            }
-            else if (NumMinutes >= 1)
-            {
-                timeText = string.Format("{0:00}:{1:00}:{2:000}", time.Minutes, time.Seconds, time.Milliseconds);
-            }
-            else
-            {
-                timeText = string.Format("{0:00}:{1:000}", time.Seconds, time.Milliseconds);
-            }
+            timeText = string.Format("{0:00}:{1:00}:{2:00}:{3:00}:{4:000}", time.Days, time.Hours, time.Minutes, time.Seconds, time.Milliseconds);
+        }
+        else if (NumHours >= 1)
+        {
+            timeText = string.Format("{0:00}:{1:00}:{2:00}:{3:000}", time.Hours, time.Minutes, time.Seconds, time.Milliseconds);
+        }
+        else if (NumMinutes >= 1)
+        {
+            timeText = string.Format("{0:00}:{1:00}:{2:000}", time.Minutes, time.Seconds, time.Milliseconds);
         }
         else
         {
             timeText = string.Format("{0:00}:{1:000}", time.Seconds, time.Milliseconds);
         }
-        
         return "<b>" + timeText + "</b>";
     }
 
@@ -125,6 +117,10 @@ public class Timer : MonoBehaviour
         if (ClockMode == Mode.stopwatch)
         {
             startTime = 0;
+            NumDays = 0;
+            NumHours = 0;
+            NumMinutes = 0;
+            NumSeconds = 0;
             time = TimeSpan.FromSeconds(startTime);
             GetComponent<Text>().text = FormatTime();
         }
@@ -137,17 +133,17 @@ public class Timer : MonoBehaviour
         {
             if(numDays >= 1)
             {
-                numDays = numDays * 86400;
+                NumDays = numDays * 86400;
             }
             if(numHours >= 1)
             {
-                numHours = numHours * 3600;
+                NumHours = numHours * 3600;
             }
             if (numMinutes >= 1)
             {
-                numMinutes = numMinutes * 60;
+                NumMinutes = numMinutes * 60;
             }
-            startTime = numDays + numHours + numMinutes + numSeconds;
+            startTime = NumDays + NumHours + NumMinutes + NumSeconds;
             time = TimeSpan.FromSeconds(startTime);
             GetComponent<Text>().text = FormatTime();
         }
